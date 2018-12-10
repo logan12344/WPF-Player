@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        x:Class="MusicPlayer.Player"
+        x:Class="MusicPlayer.PlayerWPF"
         mc:Ignorable="d"
         Title="Player" Height="510" Width="800" WindowStartupLocation="CenterScreen" AllowsTransparency="true" SizeToContent="WidthAndHeight" WindowStyle="None" Activated="Window_Activated">
 
@@ -13,12 +13,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Window.Background>
-        <RadialGradientBrush>
-            <GradientStop Color="Black" Offset="0"/>
-            <GradientStop Color="White" Offset="1"/>
-        </RadialGradientBrush>
-    </Window.Background>
 
     <DockPanel>
         <DockPanel Name="TitleBox" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="27" MouseLeftButtonDown="TitleBox_MouseLeftButtonDown" DockPanel.Dock="Top" >
@@ -33,12 +27,21 @@
                 <Path Stroke="White"  StrokeThickness="1" Stretch="None" RenderOptions.EdgeMode="Aliased" Data="M0,8 H8 M0,7 H8 M0,6 H8" RenderTransformOrigin="-4.312,0.562"/>
             </Button>
         </DockPanel>
-        <DockPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Background="#FF2E46B2">
+        <DockPanel x:Name="dockFirst" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Background="#FF2E46B2">
             <Button x:Name="btLoad" Height="40" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right" Width="40" Margin="0,5,5,0" Click="btLoad_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
                             <Image Height="38" Width="39" Source="Resources\down-arrow-inside-a-circle.png" VerticalAlignment="Center" MouseEnter="playImg_MouseEnter" MouseLeave="playImg_MouseLeave"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button x:Name="btSettings" Height="40" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right" Width="40" Margin="0,5,5,0" Click="BtSettings_Click">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Grid>
+                            <Image Height="40" Width="40" Source="Resources\settings-work-tool.png" VerticalAlignment="Center" MouseEnter="playImg_MouseEnter" MouseLeave="playImg_MouseLeave"/>
                         </Grid>
                     </ControlTemplate>
                 </Button.Template>
@@ -80,9 +83,9 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Label x:Name="Pesnya" Height="35" Width="500" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True"/>
+            <Label x:Name="Pesnya" Height="35" Width="438" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True"/>
         </DockPanel>
-        <DockPanel VerticalAlignment="Top" DockPanel.Dock="Top" Background="#FF2E46B2">
+        <DockPanel x:Name="dockSecond" VerticalAlignment="Top" DockPanel.Dock="Top" Background="#FF2E46B2">
             <Button x:Name="SoundOn" Width="30" Height="30" Click="SoundOn_Click" Margin="0,0,5,0" HorizontalAlignment="Right" DockPanel.Dock="Right" VerticalAlignment="Center" IsHitTestVisible="True">
                 <Button.Template>
                     <ControlTemplate>
@@ -103,7 +106,7 @@
                 </Button.Template>
             </Button>
         </DockPanel>
-        <DockPanel VerticalAlignment="Top" Height="50" DockPanel.Dock="Top" Background="#FF2E46B2">
+        <DockPanel x:Name="dockThird" VerticalAlignment="Top" Height="50" DockPanel.Dock="Top" Background="#FF2E46B2">
             <Button x:Name="btBefore" Content="Before" Height="40" VerticalAlignment="Center" Width="40" Click="btbefore_Click" Margin="5,0,0,2">
                 <Button.Template>
                     <ControlTemplate>
@@ -152,11 +155,11 @@
             </Button>
             <Slider x:Name="Peremotka" Style="{StaticResource Horizontal_Slider}" Height="25" VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Maximum="100" Margin="5,0,5,10"  LostMouseCapture="Peremotka_LostMouseCapture" MouseEnter="all_MouseEnter" MouseLeave="all_MouseLeave" />
         </DockPanel>
-        <DockPanel VerticalAlignment="Top" Height="306" DockPanel.Dock="Top">
+        <DockPanel x:Name="dockFourth" VerticalAlignment="Top" Height="306" DockPanel.Dock="Top">
             <DockPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                    <GradientStop Color="#FF632470" Offset="0.997"/>
-                    <GradientStop Color="#FF2E46B2" Offset="0.387"/>
+                    <GradientStop Color="#FF632470" Offset="1"/>
+                    <GradientStop Color="#FF2E46B2" Offset="0"/>
                 </LinearGradientBrush>
             </DockPanel.Background>
             <ScrollViewer x:Name="sv1" Width="700" Height="auto" HorizontalAlignment="Left" BorderBrush="{x:Null}" Background="{x:Null}"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" AllowDrop="True" DragEnter="list_DragEnter" Drop="list_Drop" ScrollChanged="ScrollChanged" >

@@ -107,7 +107,7 @@ namespace MusicPlayer
             LinearGradientBrush gradient = new LinearGradientBrush();
             gradient.StartPoint = new Point(0.5, 0);
             gradient.EndPoint = new Point(0.5, 1);
-            gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 0));
+            gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 0.35));
             gradient.GradientStops.Add(new GradientStop(Colors.Aqua, 1));
             dockFourth.Background = gradient;
 
@@ -129,7 +129,7 @@ namespace MusicPlayer
             LinearGradientBrush gradient = new LinearGradientBrush();
             gradient.StartPoint = new Point(0.5, 0);
             gradient.EndPoint = new Point(0.5, 1);
-            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF2E46B2"), 0));
+            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF2E46B2"), 0.35));
             gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 1));
             dockFourth.Background = gradient;
 

@@ -159,7 +159,7 @@
             <DockPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                     <GradientStop Color="#FF632470" Offset="1"/>
-                    <GradientStop Color="#FF2E46B2" Offset="0"/>
+                    <GradientStop Color="#FF2E46B2" Offset="0.35"/>
                 </LinearGradientBrush>
             </DockPanel.Background>
             <ScrollViewer x:Name="sv1" Width="700" Height="auto" HorizontalAlignment="Left" BorderBrush="{x:Null}" Background="{x:Null}"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" AllowDrop="True" DragEnter="list_DragEnter" Drop="list_Drop" ScrollChanged="ScrollChanged" >

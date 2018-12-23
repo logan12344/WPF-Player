@@ -206,7 +206,7 @@ namespace MusicPlayer
         private void btReload_Click(object sender, RoutedEventArgs e)
         {
             image();
-            Pesnya.Content = "";
+            Pesnya.Text = "";
             audioList.Clear();
             i = 0;
             list.Items.Clear();
@@ -376,7 +376,7 @@ namespace MusicPlayer
 
         private void btPlay_Click(object sender, RoutedEventArgs e)
         {
-            if (String.IsNullOrEmpty((string)Pesnya.Content))
+            if (String.IsNullOrEmpty((string)Pesnya.Text))
             {
                 clear();
                 player.Close();
@@ -477,7 +477,7 @@ namespace MusicPlayer
 
         private void content()
         {
-            Pesnya.Content = list.SelectedItem;
+            Pesnya.Text = list.SelectedItem.ToString();
             if (list.SelectedItem != null)
             {
                 aboutSong.infoText.Text = list.SelectedItem.ToString();

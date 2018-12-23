@@ -83,7 +83,24 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Label x:Name="Pesnya" Height="35" Width="650" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True" Margin="143,0,0,2" FontWeight="Bold"/>
+            <TextBlock Height="35" Width="650" Name="Pesnya" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True" Margin="143,0,0,2" FontWeight="Bold">
+                <TextBlock.RenderTransform>
+                    <TranslateTransform x:Name="translate" />
+                </TextBlock.RenderTransform>
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimation
+                        From="500" To="0"
+                        Storyboard.TargetName="translate"
+                        Storyboard.TargetProperty="X"
+                        Duration="0:0:6" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
         </Grid>
         <DockPanel x:Name="dockSecond" VerticalAlignment="Top" DockPanel.Dock="Top" Background="#FF2E46B2">
             <Button x:Name="SoundOn" Width="30" Height="30" Click="SoundOn_Click" Margin="0,0,5,0" HorizontalAlignment="Right" DockPanel.Dock="Right" VerticalAlignment="Center" IsHitTestVisible="True">

@@ -278,27 +278,6 @@ namespace MusicPlayer
             }
         }
 
-        private void Scatter_Click(object sender, RoutedEventArgs e)
-        {
-            if (!count)
-            {
-                count = true;
-                Button myImg = (Button)sender;
-                DropShadowEffect myEffect = new DropShadowEffect();
-                myEffect.Color = Colors.Lavender;
-                myEffect.BlurRadius = 10;
-                myEffect.ShadowDepth = 0;
-                myEffect.Opacity = 1;
-                myImg.Effect = myEffect;
-            }
-            else
-            {
-                count = false;
-                Button myImg = (Button)sender;
-                myImg.ClearValue(EffectProperty);
-            }
-        }
-
         private void SoundOff_Click(object sender, RoutedEventArgs e)
         {
             mute();
@@ -394,14 +373,22 @@ namespace MusicPlayer
 
         private void List_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            clear();
-            player.Close();
-            Peremotka.Value = 0;
-            volumeChange();
-            player.Open(new Uri(audioList[list.SelectedIndex]));
-            pathImage(list.SelectedIndex);
-            timer();
-            informationStatus();
+            try
+            {
+                clear();
+                player.Close();
+                Peremotka.Value = 0;
+                volumeChange();
+                player.Open(new Uri(audioList[list.SelectedIndex]));
+                pathImage(list.SelectedIndex);
+                timer();
+                informationStatus();
+            }
+            catch
+            {
+                player.Play();
+            }
+            
         }
 
         private void timer()
@@ -443,6 +430,7 @@ namespace MusicPlayer
 
         private void informationStatus()
         {
+            list2.SelectedIndex = list.SelectedIndex;
             labelTick();
             player.Play();
             list.Focus();
@@ -506,6 +494,27 @@ namespace MusicPlayer
             }
         }
 
+        private void Scatter_Click(object sender, RoutedEventArgs e)
+        {
+            if (!count)
+            {
+                count = true;
+                Button myImg = (Button)sender;
+                DropShadowEffect myEffect = new DropShadowEffect();
+                myEffect.Color = Colors.Purple;
+                myEffect.BlurRadius = 10;
+                myEffect.ShadowDepth = 1;
+                myEffect.Opacity = 1;
+                myImg.Effect = myEffect;
+            }
+            else
+            {
+                count = false;
+                Button myImg = (Button)sender;
+                myImg.ClearValue(EffectProperty);
+            }
+        }
+
         private void scatter()
         {
             randlistIndex = randomSound();
@@ -532,7 +541,10 @@ namespace MusicPlayer
         {
             Image myImg = (Image)sender;
             DropShadowEffect myEffect = new DropShadowEffect();
-            myEffect.Color = Colors.White;
+            if (!backGround)
+                myEffect.Color = Colors.White;
+            else
+                myEffect.Color = Colors.Black;
             myEffect.BlurRadius = 10;
             myEffect.ShadowDepth = 0;
             myEffect.Opacity = 1;

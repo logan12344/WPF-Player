@@ -83,24 +83,7 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <TextBlock Height="35" Width="650" Name="Pesnya" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True" Margin="143,0,0,2" FontWeight="Bold">
-                <TextBlock.RenderTransform>
-                    <TranslateTransform x:Name="translate" />
-                </TextBlock.RenderTransform>
-                <TextBlock.Triggers>
-                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                        <BeginStoryboard>
-                            <Storyboard RepeatBehavior="Forever">
-                                <DoubleAnimation
-                        From="500" To="0"
-                        Storyboard.TargetName="translate"
-                        Storyboard.TargetProperty="X"
-                        Duration="0:0:6" />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                </TextBlock.Triggers>
-            </TextBlock>
+            <TextBlock Height="35" Width="650" Name="Pesnya" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True" Margin="143,0,0,2" FontWeight="Bold"/>
         </Grid>
         <DockPanel x:Name="dockSecond" VerticalAlignment="Top" DockPanel.Dock="Top" Background="#FF2E46B2">
             <Button x:Name="SoundOn" Width="30" Height="30" Click="SoundOn_Click" Margin="0,0,5,0" HorizontalAlignment="Right" DockPanel.Dock="Right" VerticalAlignment="Center" IsHitTestVisible="True">
@@ -180,10 +163,10 @@
                 </LinearGradientBrush>
             </DockPanel.Background>
             <ScrollViewer x:Name="sv1" Width="700" Height="auto" HorizontalAlignment="Left" BorderBrush="{x:Null}" Background="{x:Null}"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" AllowDrop="True" DragEnter="list_DragEnter" Drop="list_Drop" ScrollChanged="ScrollChanged" >
-                <ListBox ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" x:Name="list" HorizontalAlignment="Left" MouseDoubleClick="List_MouseDoubleClick" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseEnter="all_MouseEnter" PreviewMouseWheel="scroll_PreviewMouseWheel" MouseLeave="all_MouseLeave" FontWeight="Bold"/>
+                <ListBox ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" x:Name="list" Width="700" HorizontalAlignment="Left" MouseDoubleClick="List_MouseDoubleClick" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" Drop="list_Drop" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseEnter="all_MouseEnter" PreviewMouseWheel="scroll_PreviewMouseWheel" MouseLeave="all_MouseLeave" FontWeight="Bold"/>
             </ScrollViewer>
             <ScrollViewer x:Name="sv2" Width="100"  Height="auto" HorizontalAlignment="Right" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" AllowDrop="True" DragEnter="list_DragEnter" Drop="list_Drop" ScrollChanged="ScrollChanged">
-                <ListBox x:Name="list2" IsHitTestVisible="False" HorizontalAlignment="Center" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="scroll_PreviewMouseWheel" FontWeight="Bold"/>
+                <ListBox ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" x:Name="list2" HorizontalAlignment="Right" Width="100" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Drop="list_Drop" ScrollViewer.VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="scroll_PreviewMouseWheel" MouseEnter="all_MouseEnter" MouseLeave="all_MouseLeave" FontWeight="Bold"/>
             </ScrollViewer>
         </DockPanel>
     </DockPanel>

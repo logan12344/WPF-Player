@@ -36,11 +36,39 @@ namespace MusicPlayer
             dbConnect();
         }
 
+        private void dbConnect()
+        {
+            if (!File.Exists("PlayList.sqlite"))
+            {
+                SQLiteConnection.CreateFile("PlayList.sqlite");
+                dbConnection = new SQLiteConnection("Data Source=PlayList.sqlite;Version=3;");
+                dbConnection.Open();
+                sql = "Create Table PlayList (playList varchar(255))";
+                command = new SQLiteCommand(sql, dbConnection);
+                command.ExecuteNonQuery();
+            }
+            else
+            {
+                dbConnection = new SQLiteConnection("Data Source=PlayList.sqlite;Version=3;");
+                dbConnection.Open();
+            }
+        }
+
         private void Window_Activated(object sender, EventArgs e)
         {
             locationWindows();
             player.MediaOpened += new EventHandler(MusicOpen);
             player.MediaEnded += new EventHandler(MusicEnd);
+        }
+
+        private void MusicOpen(object sender, EventArgs e)
+        {
+            Peremotka.Maximum = Math.Round(player.NaturalDuration.TimeSpan.TotalSeconds);
+        }
+
+        private void MusicEnd(object sender, EventArgs e)
+        {
+            btNext_Click(sender, null);
         }
 
         private void btClose_Click(object sender, RoutedEventArgs e)
@@ -187,6 +215,18 @@ namespace MusicPlayer
             player.Stop();
         }
 
+        private void clear()
+        {
+            aboutSong.infoBox.Items.Clear();
+            aboutSong.infoText.Text = "";
+        }
+
+        private void image()
+        {
+            ImageSource imageSource = new BitmapImage(new Uri("/Resources/music-album.png", UriKind.Relative));
+            myImage.Source = imageSource;
+        }
+
         private void btLoad_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.OpenFileDialog open = new System.Windows.Forms.OpenFileDialog();
@@ -199,6 +239,42 @@ namespace MusicPlayer
                     pathList.Add(file);
                     addMusic();
                 }
+            }
+        }
+
+        private void addMusic()
+        {
+            try
+            {
+                var textInfo = new CultureInfo("ru-RU").TextInfo;
+                TagLib.File file = TagLib.File.Create(audioList[i]);
+                string trackName = Path.GetFileNameWithoutExtension(textInfo.ToTitleCase(textInfo.ToLower(audioList[i])));
+                list.Items.Add(i + 1 + ". " + trackName);
+                list2.Items.Add(file.Properties.Duration.ToString("mm\\:ss"));
+                i++;
+            }
+            catch
+            {
+                MessageBox.Show("Track not found", "Error", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+            }
+        }
+
+        private void list_Drop(object sender, DragEventArgs e)
+        {
+            files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            foreach (string file1 in files)
+            {
+                audioList.Add(file1);
+                pathList.Add(Path.GetFullPath(file1));
+                addMusic();
+            }
+        }
+
+        private void list_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
+            {
+                e.Effects = DragDropEffects.Copy;
             }
         }
 
@@ -260,6 +336,20 @@ namespace MusicPlayer
             slider.Value = 0;
         }
 
+        private void mute1()
+        {
+            player.IsMuted = true;
+            SoundOn.Visibility = Visibility.Hidden;
+            SoundOff.Visibility = Visibility.Visible;
+        }
+
+        private void mute()
+        {
+            player.IsMuted = false;
+            SoundOff.Visibility = Visibility.Hidden;
+            SoundOn.Visibility = Visibility.Visible;
+        }
+
         private void btbefore_Click(object sender, RoutedEventArgs e)
         {
             clear();
@@ -314,6 +404,14 @@ namespace MusicPlayer
             informationStatus();
         }
 
+        private void timer()
+        {
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 0, 1);
+            timer.Tick += new EventHandler(timerTick);
+            timer.Start();
+        }
+
         private void btNext_Click(object sender, RoutedEventArgs e)
         {
             clear();
@@ -333,24 +431,34 @@ namespace MusicPlayer
                 lastClick();
         }
 
+        private void lastClick()
+        {
+            list.SelectedIndex = list.SelectedIndex;
+            player.Open(new Uri(audioList[list.SelectedIndex]));
+            pathImage(list.SelectedIndex);
+            list.Focus();
+            content();
+            player.Play();
+        }
+
+        private void informationStatus()
+        {
+            labelTick();
+            player.Play();
+            list.Focus();
+            content();
+        }
+
+        private void volumeChange()
+        {
+            player.Volume = Convert.ToDouble(slider.Value) / 170;
+        }
+
         private void Peremotka_LostMouseCapture(object sender, MouseEventArgs e)
         {
             player.Pause();
             player.Position = TimeSpan.FromSeconds(Peremotka.Value);
             player.Play();
-        }
-
-        private void labelTick()
-        {
-            label.Content = TimeSpan.FromSeconds(Math.Round(Peremotka.Value)) + "/" + TimeSpan.FromSeconds(Peremotka.Maximum);
-        }
-
-        private void timer()
-        {
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 1);
-            timer.Tick += new EventHandler(timerTick);
-            timer.Start();
         }
 
         private void timerTick(object sender, EventArgs e)
@@ -362,51 +470,9 @@ namespace MusicPlayer
             }
         }
 
-        private void MusicOpen(object sender, EventArgs e)
+        private void labelTick()
         {
-            Peremotka.Maximum = Math.Round(player.NaturalDuration.TimeSpan.TotalSeconds);
-        }
-
-        private void MusicEnd(object sender, EventArgs e)
-        {
-            btNext_Click(sender, null);
-        }
-
-        private void informationStatus()
-        {
-            labelTick();
-            player.Play();
-            list.Focus();
-            content();
-        }
-
-        private void mute1()
-        {
-            player.IsMuted = true;
-            SoundOn.Visibility = Visibility.Hidden;
-            SoundOff.Visibility = Visibility.Visible;
-        }
-
-        private void mute()
-        {
-            player.IsMuted = false;
-            SoundOff.Visibility = Visibility.Hidden;
-            SoundOn.Visibility = Visibility.Visible;
-        }
-
-        private void volumeChange()
-        {
-            player.Volume = Convert.ToDouble(slider.Value) / 170;
-        }
-
-        private void lastClick()
-        {
-            list.SelectedIndex = list.SelectedIndex;
-            player.Open(new Uri(audioList[list.SelectedIndex]));
-            pathImage(list.SelectedIndex);
-            list.Focus();
-            content();
-            player.Play();
+            label.Content = TimeSpan.FromSeconds(Math.Round(Peremotka.Value)) + "/" + TimeSpan.FromSeconds(Peremotka.Maximum);
         }
 
         private void content()
@@ -440,45 +506,25 @@ namespace MusicPlayer
             }
         }
 
-        private void image()
+        private void scatter()
         {
-            ImageSource imageSource = new BitmapImage(new Uri("/Resources/music-album.png", UriKind.Relative));
-            myImage.Source = imageSource;
+            randlistIndex = randomSound();
+            player.Open(new Uri(audioList[randlistIndex]));
+            pathImage(randlistIndex);
+            list.SelectedIndex = randlistIndex;
+            informationStatus();
         }
 
-        private void addMusic()
+        private int randomSound()
         {
             try
             {
-                var textInfo = new CultureInfo("ru-RU").TextInfo;
-                TagLib.File file = TagLib.File.Create(audioList[i]);
-                string trackName = Path.GetFileNameWithoutExtension(textInfo.ToTitleCase(textInfo.ToLower(audioList[i])));
-                list.Items.Add(i + 1 + ". " + trackName);
-                list2.Items.Add(file.Properties.Duration.ToString("mm\\:ss"));
-                i++;
+                Random rnd = new Random();
+                return randomNumb = rnd.Next(list.Items.Count);
             }
             catch
             {
-                MessageBox.Show("Track not found", "Error", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
-            }
-        }
-
-        private void list_Drop(object sender, DragEventArgs e)
-        {
-            files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            foreach (string file1 in files)
-            {
-                audioList.Add(file1);
-                pathList.Add(Path.GetFullPath(file1));
-                addMusic();
-            }
-        }
-
-        private void list_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
-            {
-                e.Effects = DragDropEffects.Copy;
+                return randomSound();
             }
         }
 
@@ -499,12 +545,6 @@ namespace MusicPlayer
             Image myImg = (Image)sender;
             myImg.ClearValue(EffectProperty);
             Cursor = Cursors.Arrow;
-        }
-
-        private void clear()
-        {
-            aboutSong.infoBox.Items.Clear();
-            aboutSong.infoText.Text = "";
         }
 
         private void all_MouseEnter(object sender, MouseEventArgs e)
@@ -535,56 +575,16 @@ namespace MusicPlayer
             }
         }
 
-        private void locationWindows()
-        {
-            locX = this.Top;
-            locY = this.Left;
-        }
-
         private void aboutSongLocation()
         {
             aboutSong.Top = locX;
             aboutSong.Left = locY - 284;
         }
 
-        private void scatter()
+        private void locationWindows()
         {
-            randlistIndex = randomSound();
-            player.Open(new Uri(audioList[randlistIndex]));
-            pathImage(randlistIndex);
-            list.SelectedIndex = randlistIndex;
-            informationStatus();
-        }
-
-        private int randomSound()
-        {
-            try
-            {
-                Random rnd = new Random();
-                return randomNumb = rnd.Next(list.Items.Count);
-            }
-            catch
-            {
-                return randomSound();
-            }
-        }
-
-        private void dbConnect()
-        {
-            if (!File.Exists("PlayList.sqlite"))
-            {
-                SQLiteConnection.CreateFile("PlayList.sqlite");
-                dbConnection = new SQLiteConnection("Data Source=PlayList.sqlite;Version=3;");
-                dbConnection.Open();
-                sql = "Create Table PlayList (playList varchar(255))";
-                command = new SQLiteCommand(sql, dbConnection);
-                command.ExecuteNonQuery();
-            }
-            else
-            {
-                dbConnection = new SQLiteConnection("Data Source=PlayList.sqlite;Version=3;");
-                dbConnection.Open();
-            }
+            locX = this.Top;
+            locY = this.Left;
         }
     }
 }

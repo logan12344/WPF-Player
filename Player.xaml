@@ -27,7 +27,7 @@
                 <Path Stroke="White"  StrokeThickness="1" Stretch="None" RenderOptions.EdgeMode="Aliased" Data="M0,8 H8 M0,7 H8 M0,6 H8" RenderTransformOrigin="-4.312,0.562"/>
             </Button>
         </DockPanel>
-        <DockPanel x:Name="dockFirst" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Background="#FF2E46B2">
+        <Grid x:Name="dockFirst" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Background="#FF2E46B2">
             <Button x:Name="btLoad" Height="40" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right" Width="40" Margin="0,5,5,0" Click="btLoad_Click">
                 <Button.Template>
                     <ControlTemplate>
@@ -37,7 +37,7 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button x:Name="btSettings" Height="40" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right" Width="40" Margin="0,5,5,0" Click="BtSettings_Click">
+            <Button x:Name="btSettings" Height="40" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right" Width="40" Margin="0,5,50,0" Click="BtSettings_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
@@ -46,7 +46,7 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button x:Name="playListLoader" Height="40" Width="40" VerticalAlignment="Top" Margin="0,5,5,0" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="PlayListLoader_Click">
+            <Button x:Name="playListLoader" Height="40" Width="40" VerticalAlignment="Top" Margin="0,5,95,0" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="PlayListLoader_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
@@ -55,7 +55,7 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button x:Name="playListSaver" Height="40" Width="40" VerticalAlignment="Top" Margin="0,5,5,0" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="PlayListSaver_Click">
+            <Button x:Name="playListSaver" Height="40" Width="40" VerticalAlignment="Top" Margin="0,5,140,0" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="PlayListSaver_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
@@ -64,7 +64,7 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button x:Name="btReload" Content="Load" Height="40" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right" Width="40" Margin="0,5,5,0"  Click="btReload_Click">
+            <Button x:Name="btReload" Content="Load" Height="40" VerticalAlignment="Top" HorizontalAlignment="Right" DockPanel.Dock="Right" Width="40" Margin="0,5,185,0"  Click="btReload_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
@@ -73,8 +73,8 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Image x:Name="myImage" Height="85"  Source="Resources\music-album.png" Margin="0,7,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Width="100"/>
-            <Button Height="40" Width="40" VerticalAlignment="Bottom" Margin="-3,0,0,5" HorizontalAlignment="Left"  Click="info_Click">
+            <Image x:Name="myImage" Height="85"  Source="Resources\music-album.png" Margin="-5,3,705,4" VerticalAlignment="Center" HorizontalAlignment="Center" Width="100"/>
+            <Button Height="40" Width="40" VerticalAlignment="Bottom" Margin="96,0,0,5" HorizontalAlignment="Left"  Click="info_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
@@ -83,8 +83,8 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Label x:Name="Pesnya" Height="35" Width="438" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True"/>
-        </DockPanel>
+            <Label x:Name="Pesnya" Height="35" Width="650" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True" Margin="143,0,0,2" FontWeight="Bold"/>
+        </Grid>
         <DockPanel x:Name="dockSecond" VerticalAlignment="Top" DockPanel.Dock="Top" Background="#FF2E46B2">
             <Button x:Name="SoundOn" Width="30" Height="30" Click="SoundOn_Click" Margin="0,0,5,0" HorizontalAlignment="Right" DockPanel.Dock="Right" VerticalAlignment="Center" IsHitTestVisible="True">
                 <Button.Template>
@@ -143,8 +143,8 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Label x:Name="label" DockPanel.Dock="Right" Margin="0,0,5,12" Width="130" Height="25" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontFamily="Arial" Content="00:00:00/00:00:00" FontSize="14" Foreground="White" Background="{x:Null}"/>
-            <Button x:Name="Scatter" Width="37" Height="37" VerticalAlignment="Bottom" Margin="0,0,0,4" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="Scatter_Click" MouseEnter="all_MouseEnter" MouseLeave="all_MouseLeave">
+            <Label x:Name="label" DockPanel.Dock="Right" Margin="0,0,5,12" Width="143" Height="25" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontFamily="Arial" Content="00:00:00/00:00:00" FontSize="16" Foreground="White" Background="{x:Null}" FontWeight="Bold"/>
+            <Button x:Name="Scatter" Width="37" Height="37" VerticalAlignment="Bottom" Margin="0,0,3,4" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="Scatter_Click" MouseEnter="all_MouseEnter" MouseLeave="all_MouseLeave">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
@@ -163,10 +163,10 @@
                 </LinearGradientBrush>
             </DockPanel.Background>
             <ScrollViewer x:Name="sv1" Width="700" Height="auto" HorizontalAlignment="Left" BorderBrush="{x:Null}" Background="{x:Null}"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" AllowDrop="True" DragEnter="list_DragEnter" Drop="list_Drop" ScrollChanged="ScrollChanged" >
-                <ListBox x:Name="list" HorizontalAlignment="Left" MouseDoubleClick="List_MouseDoubleClick" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseEnter="all_MouseEnter" PreviewMouseWheel="scroll_PreviewMouseWheel" MouseLeave="all_MouseLeave"/>
+                <ListBox x:Name="list" HorizontalAlignment="Left" MouseDoubleClick="List_MouseDoubleClick" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseEnter="all_MouseEnter" PreviewMouseWheel="scroll_PreviewMouseWheel" MouseLeave="all_MouseLeave" FontWeight="Bold"/>
             </ScrollViewer>
             <ScrollViewer x:Name="sv2" Width="100"  Height="auto" HorizontalAlignment="Right" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" AllowDrop="True" DragEnter="list_DragEnter" Drop="list_Drop" ScrollChanged="ScrollChanged">
-                <ListBox x:Name="list2" IsHitTestVisible="False"  HorizontalAlignment="Center" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="scroll_PreviewMouseWheel"/>
+                <ListBox x:Name="list2" IsHitTestVisible="False"  HorizontalAlignment="Center" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="scroll_PreviewMouseWheel" FontWeight="Bold"/>
             </ScrollViewer>
         </DockPanel>
     </DockPanel>

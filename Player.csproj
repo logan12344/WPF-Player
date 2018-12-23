@@ -126,7 +126,7 @@
       <DependentUpon>Player.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Resources\Sliders.xaml">
+    <Page Include="Resources\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -9,7 +9,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Sliders.xaml" />
+                <ResourceDictionary Source="/Resources/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -163,10 +163,10 @@
                 </LinearGradientBrush>
             </DockPanel.Background>
             <ScrollViewer x:Name="sv1" Width="700" Height="auto" HorizontalAlignment="Left" BorderBrush="{x:Null}" Background="{x:Null}"  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" AllowDrop="True" DragEnter="list_DragEnter" Drop="list_Drop" ScrollChanged="ScrollChanged" >
-                <ListBox x:Name="list" HorizontalAlignment="Left" MouseDoubleClick="List_MouseDoubleClick" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseEnter="all_MouseEnter" PreviewMouseWheel="scroll_PreviewMouseWheel" MouseLeave="all_MouseLeave" FontWeight="Bold"/>
+                <ListBox ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" x:Name="list" HorizontalAlignment="Left" MouseDoubleClick="List_MouseDoubleClick" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseEnter="all_MouseEnter" PreviewMouseWheel="scroll_PreviewMouseWheel" MouseLeave="all_MouseLeave" FontWeight="Bold"/>
             </ScrollViewer>
             <ScrollViewer x:Name="sv2" Width="100"  Height="auto" HorizontalAlignment="Right" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" AllowDrop="True" DragEnter="list_DragEnter" Drop="list_Drop" ScrollChanged="ScrollChanged">
-                <ListBox x:Name="list2" IsHitTestVisible="False"  HorizontalAlignment="Center" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="scroll_PreviewMouseWheel" FontWeight="Bold"/>
+                <ListBox x:Name="list2" IsHitTestVisible="False" HorizontalAlignment="Center" FontFamily="Arial" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="scroll_PreviewMouseWheel" FontWeight="Bold"/>
             </ScrollViewer>
         </DockPanel>
     </DockPanel>

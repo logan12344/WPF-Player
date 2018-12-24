@@ -19,7 +19,7 @@
             </DockPanel.Background>
         </DockPanel>
         <DockPanel x:Name="infoPanel" Width="auto" Height="96" VerticalAlignment="Top" Background="#FF2E46B2">
-            <ListBox x:Name="infoBox" Height="auto" Width="auto" IsHitTestVisible="False"  HorizontalAlignment="Left" FontFamily="Arial" Foreground="White" FontSize="13" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
+            <ListBox x:Name="infoBox" Height="auto" Width="auto" IsHitTestVisible="False"  HorizontalAlignment="Left" FontFamily="Arial" Foreground="White" FontSize="13" FontWeight="Bold" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
         </DockPanel>
     </DockPanel>
 </Window>

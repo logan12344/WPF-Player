@@ -10,6 +10,8 @@ using System.Windows.Media.Effects;
 using System.Globalization;
 using System.Windows.Media.Imaging;
 using System.Data.SQLite;
+using System.Threading;
+using System.Threading.Tasks;
 using Player;
 
 namespace MusicPlayer
@@ -33,7 +35,12 @@ namespace MusicPlayer
         public PlayerWPF()
         {
             InitializeComponent();
-            dbConnect();
+            dbConnectAsync();
+        }
+
+        private async void dbConnectAsync()
+        {
+            await Task.Run(() => dbConnect());
         }
 
         private void dbConnect()
@@ -552,6 +559,18 @@ namespace MusicPlayer
             Cursor = Cursors.Hand;
         }
 
+        private void instagramImg_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Image myImg = (Image)sender;
+            DropShadowEffect myEffect = new DropShadowEffect();
+            myEffect.Color = Colors.Red;
+            myEffect.BlurRadius = 10;
+            myEffect.ShadowDepth = 0;
+            myEffect.Opacity = 1;
+            myImg.Effect = myEffect;
+            Cursor = Cursors.Hand;
+        }
+
         private void playImg_MouseLeave(object sender, MouseEventArgs e)
         {
             Image myImg = (Image)sender;
@@ -597,6 +616,11 @@ namespace MusicPlayer
         {
             locX = this.Top;
             locY = this.Left;
+        }
+
+        private void Instagram_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://www.instagram.com/logan.pasha/");
         }
     }
 }

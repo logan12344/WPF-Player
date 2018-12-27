@@ -9,14 +9,12 @@
     <DockPanel>
         <DockPanel Name="TitleBox" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="27" MouseLeftButtonDown="TitleBox_MouseLeftButtonDown" DockPanel.Dock="Top" >
             <DockPanel.Background>
-                <SolidColorBrush Color="Black"/>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF632470" Offset="0.35"/>
+                    <GradientStop Color="#FF2E46B2" Offset="1"/>
+                </LinearGradientBrush>
             </DockPanel.Background>
             <TextBlock x:Name="infoText" Width="auto" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Gadugi" FontSize="14" Foreground="White" TextDecorations="{x:Null}" Margin="10,0,0,0" FontWeight="Bold"/>
-        </DockPanel>
-        <DockPanel VerticalAlignment="Top" Width="27" Height="96">
-            <DockPanel.Background>
-                <SolidColorBrush Color="Black"/>
-            </DockPanel.Background>
         </DockPanel>
         <DockPanel x:Name="infoPanel" Width="auto" Height="96" VerticalAlignment="Top" Background="#FF2E46B2">
             <ListBox x:Name="infoBox" Height="auto" Width="auto" IsHitTestVisible="False"  HorizontalAlignment="Left" FontFamily="Arial" Foreground="White" FontSize="13" FontWeight="Bold" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"/>

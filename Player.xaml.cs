@@ -18,14 +18,14 @@ namespace MusicPlayer
 {
     public partial class PlayerWPF : Window
     {
-        public List<String> audioList = new List<String>();
-        public List<String> pathList = new List<String>();
+        private List<String> audioList = new List<String>();
+        private List<String> pathList = new List<String>();
         private MediaPlayer player = new MediaPlayer();
-        public int i = 0, p = 0, randomNumb, randlistIndex;
-        public double volume = 0, locX, locY;
-        public string[] files;
-        public string str, sql;
-        public bool count = false, backGround = false;
+        private int i = 0, p = 0, randomNumb, randlistIndex;
+        private double volume = 0, locX, locY;
+        private string[] files;
+        private string str, sql;
+        private bool count = false, backGround = false;
         Info aboutSong = new Info();
         SQLiteConnection dbConnection;
         SQLiteCommand command;
@@ -123,7 +123,7 @@ namespace MusicPlayer
             if (!backGround)
             {
                 backGround = true;
-                customBackGround();
+                customMainBackGround();
             }
             else
             {
@@ -132,34 +132,19 @@ namespace MusicPlayer
             }
         }
 
-        private void customBackGround()
+        private void defaulBackGround()
         {
-            dockFirst.Background = Brushes.LightPink;
-            dockSecond.Background = Brushes.LightPink;
-            dockThird.Background = Brushes.LightPink;
-            aboutSong.infoPanel.Background = Brushes.LightPink;
-
-            LinearGradientBrush gradient = new LinearGradientBrush();
-            gradient.StartPoint = new Point(0.5, 0);
-            gradient.EndPoint = new Point(0.5, 1);
-            gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 0.35));
-            gradient.GradientStops.Add(new GradientStop(Colors.Aqua, 1));
-            dockFourth.Background = gradient;
-
-            aboutSong.infoBox.Foreground = Brushes.Black;
-            label.Foreground = Brushes.Black;
-            Pesnya.Foreground = Brushes.Black;
-            list.Foreground = Brushes.Black;
-            list2.Foreground = Brushes.Black;
+            mainFormDefaultBackGround();
+            defaulTitleBoxGradient();
+            infoDefaultBackGround();
         }
 
-        private void defaulBackGround()
+        private void mainFormDefaultBackGround()
         {
             var bc = new BrushConverter();
             dockFirst.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
             dockSecond.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
             dockThird.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
-            aboutSong.infoPanel.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
 
             LinearGradientBrush gradient = new LinearGradientBrush();
             gradient.StartPoint = new Point(0.5, 0);
@@ -168,30 +153,95 @@ namespace MusicPlayer
             gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 1));
             dockFourth.Background = gradient;
 
-            aboutSong.infoBox.Foreground = Brushes.White;
             label.Foreground = Brushes.White;
             Pesnya.Foreground = Brushes.White;
             list.Foreground = Brushes.White;
-            list2.Foreground = Brushes.White;
+        }
+
+        private void infoDefaultBackGround()
+        {
+            var bc = new BrushConverter();
+            aboutSong.infoPanel.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
+            aboutSong.infoBox.Foreground = Brushes.White;
+            aboutSong.infoText.Foreground = Brushes.White;
+            LinearGradientBrush gradient = new LinearGradientBrush();
+            gradient.StartPoint = new Point(0.5, 0);
+            gradient.EndPoint = new Point(0.5, 1);
+            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF2E46B2"), 1));
+            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 0.35));
+            aboutSong.TitleBox.Background = gradient;
+        }
+
+        private void defaulTitleBoxGradient()
+        {
+            LinearGradientBrush gradient = new LinearGradientBrush();
+            gradient.StartPoint = new Point(0.5, 0);
+            gradient.EndPoint = new Point(0.5, 1);
+            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF2E46B2"), 1));
+            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 0.35));
+            TitleBox.Background = gradient;
+            Caption.Foreground = Brushes.White;
+        }
+
+        private void customMainBackGround()
+        {
+            customMainTitleBoxGradient();
+            mainFormBackGround();
+            infoCustomBackGround();
+        }
+
+        private void mainFormBackGround()
+        {
+            dockFirst.Background = Brushes.LightPink;
+            dockSecond.Background = Brushes.LightPink;
+            dockThird.Background = Brushes.LightPink;
+
+            LinearGradientBrush gradient = new LinearGradientBrush();
+            gradient.StartPoint = new Point(0.5, 0);
+            gradient.EndPoint = new Point(0.5, 1);
+            gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 0.35));
+            gradient.GradientStops.Add(new GradientStop(Colors.Aqua, 1));
+            dockFourth.Background = gradient;
+            
+            label.Foreground = Brushes.Black;
+            Pesnya.Foreground = Brushes.Black;
+            list.Foreground = Brushes.Black;
+        }
+
+        private void infoCustomBackGround()
+        {
+            LinearGradientBrush gradient = new LinearGradientBrush();
+            gradient.StartPoint = new Point(0.5, 0);
+            gradient.EndPoint = new Point(0.5, 1);
+            gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 1));
+            gradient.GradientStops.Add(new GradientStop(Colors.Aqua, 0.35));
+            aboutSong.TitleBox.Background = gradient;
+            aboutSong.infoBox.Foreground = Brushes.Black;
+            aboutSong.infoPanel.Background = Brushes.LightPink;
+            aboutSong.infoText.Foreground = Brushes.Black;
+        }
+
+        private void customMainTitleBoxGradient()
+        {
+            LinearGradientBrush gradient = new LinearGradientBrush();
+            gradient.StartPoint = new Point(0.5, 0);
+            gradient.EndPoint = new Point(0.5, 1);
+            gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 1));
+            gradient.GradientStops.Add(new GradientStop(Colors.Aqua, 0.35));
+            TitleBox.Background = gradient;
+            Caption.Foreground = Brushes.Black;
         }
 
         private void PlayListSaver_Click(object sender, RoutedEventArgs e)
         {
-            try
+            command = new SQLiteCommand(@"DELETE FROM PlayList;", dbConnection);
+            command.ExecuteNonQuery();
+            for (int p = 0; p < audioList.Count; p++)
             {
-                command = new SQLiteCommand(@"DELETE FROM PlayList;", dbConnection);
-                command.ExecuteNonQuery();
-                for (int p = 0; p < audioList.Count; p++)
-                {
-                    insert = new SQLiteDataAdapter();
-                    insert.InsertCommand = new SQLiteCommand("Insert Into PlayList Values (@playList)", dbConnection);
-                    insert.InsertCommand.Parameters.AddWithValue("@playList", audioList[p]);
-                    insert.InsertCommand.ExecuteNonQuery();
-                }
-            }
-            catch (SQLiteException ew)
-            {
-                MessageBox.Show("SQLite Error:" + ew.ToString());
+                insert = new SQLiteDataAdapter();
+                insert.InsertCommand = new SQLiteCommand("Insert Into PlayList Values (@playList)", dbConnection);
+                insert.InsertCommand.Parameters.AddWithValue("@playList", audioList[p]);
+                insert.InsertCommand.ExecuteNonQuery();
             }
         }
 
@@ -199,7 +249,6 @@ namespace MusicPlayer
         {
             audioList.Clear();
             list.Items.Clear();
-            list2.Items.Clear();
             command = new SQLiteCommand("SELECT * FROM PlayList", dbConnection);
             rdr = command.ExecuteReader();
             while (rdr.Read())
@@ -217,7 +266,6 @@ namespace MusicPlayer
             audioList.Clear();
             i = 0;
             list.Items.Clear();
-            list2.Items.Clear();
             clear();
             player.Stop();
         }
@@ -253,16 +301,17 @@ namespace MusicPlayer
         {
             try
             {
-                var textInfo = new CultureInfo("ru-RU").TextInfo;
                 TagLib.File file = TagLib.File.Create(audioList[i]);
-                string trackName = Path.GetFileNameWithoutExtension(textInfo.ToTitleCase(textInfo.ToLower(audioList[i])));
-                list.Items.Add(i + 1 + ". " + trackName);
-                list2.Items.Add(file.Properties.Duration.ToString("mm\\:ss"));
-                i++;
+                list.Items.Add(i + 1 + ". " + file.Tag.FirstPerformer + " - " + file.Tag.Title);
             }
             catch
             {
-                MessageBox.Show("Track not found", "Error", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                var textInfo = new CultureInfo("ru-RU").TextInfo;
+                CustomMessageBox.Show("Track not found: ", Path.GetFileNameWithoutExtension(textInfo.ToTitleCase(textInfo.ToLower(audioList[i]))));
+            }
+            finally
+            {
+                i++;
             }
         }
 
@@ -437,7 +486,6 @@ namespace MusicPlayer
 
         private void informationStatus()
         {
-            list2.SelectedIndex = list.SelectedIndex;
             labelTick();
             player.Play();
             list.Focus();
@@ -559,18 +607,6 @@ namespace MusicPlayer
             Cursor = Cursors.Hand;
         }
 
-        private void instagramImg_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Image myImg = (Image)sender;
-            DropShadowEffect myEffect = new DropShadowEffect();
-            myEffect.Color = Colors.Red;
-            myEffect.BlurRadius = 10;
-            myEffect.ShadowDepth = 0;
-            myEffect.Opacity = 1;
-            myImg.Effect = myEffect;
-            Cursor = Cursors.Hand;
-        }
-
         private void playImg_MouseLeave(object sender, MouseEventArgs e)
         {
             Image myImg = (Image)sender;
@@ -586,24 +622,6 @@ namespace MusicPlayer
         private void all_MouseLeave(object sender, MouseEventArgs e)
         {
             Cursor = Cursors.Arrow;
-        }
-
-        private void scroll_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            sv1.ScrollToVerticalOffset(sv1.VerticalOffset - (double)e.Delta);
-            sv2.ScrollToVerticalOffset(sv2.VerticalOffset - (double)e.Delta);
-        }
-
-        private void ScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            if (sender == sv1)
-            {
-                sv2.ScrollToVerticalOffset(e.VerticalOffset);
-            }
-            else
-            {
-                sv1.ScrollToVerticalOffset(e.VerticalOffset);
-            }
         }
 
         private void aboutSongLocation()

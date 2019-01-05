@@ -24,7 +24,7 @@ namespace Player
             MsgBox = new CustomMessageBox();
             MsgBox.msbContent.Text = Error;
             MsgBox.msbContent.Text += Text;
-           MsgBox.ShowDialog();
+            MsgBox.ShowDialog();
             return result;
         }
 

@@ -5,6 +5,7 @@
         x:Class="MusicPlayer.PlayerWPF"
         mc:Ignorable="d"
         Title="Player" Height="510" Width="800" WindowStartupLocation="CenterScreen" AllowsTransparency="true" SizeToContent="WidthAndHeight" WindowStyle="None" Activated="Window_Activated">
+    
 
     <Window.Resources>
         <ResourceDictionary>
@@ -40,7 +41,6 @@
             </Button>
         </DockPanel>
         <Grid x:Name="dockFirst" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Background="#FF2E46B2">
-
             <Button x:Name="btLoad" Height="40" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40" Margin="0,5,5,0" Click="btLoad_Click" Grid.Column="3">
                 <Button.Template>
                     <ControlTemplate>
@@ -87,16 +87,7 @@
                 </Button.Template>
             </Button>
             <Image x:Name="myImage" Height="85"  Source="Resources\music-album.png" Margin="-1,3,701,4" VerticalAlignment="Center" HorizontalAlignment="Center" Width="100"/>
-            <Button Height="40" Width="40" VerticalAlignment="Bottom" Margin="99,0,0,5" HorizontalAlignment="Left"  Click="info_Click">
-                <Button.Template>
-                    <ControlTemplate>
-                        <Grid>
-                            <Image Height="40" Width="40" Source="Resources\information.png" VerticalAlignment="Center" MouseEnter="playImg_MouseEnter" MouseLeave="playImg_MouseLeave"/>
-                        </Grid>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-            <TextBlock Height="35" Width="653" Name="Pesnya" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True" Margin="147,0,0,0" FontWeight="Bold"/>
+            <TextBlock Height="35" Width="688" Name="Pesnya" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Left" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True" Margin="101,0,0,0" FontWeight="Bold"/>
         </Grid>
         <DockPanel x:Name="dockSecond" VerticalAlignment="Top" DockPanel.Dock="Top" Background="#FF2E46B2">
             <Button x:Name="SoundOn" Width="30" Height="30" Click="SoundOn_Click" Margin="0,0,5,0" HorizontalAlignment="Right" DockPanel.Dock="Right" VerticalAlignment="Center" IsHitTestVisible="True">
@@ -175,7 +166,15 @@
                     <GradientStop Color="#FF2E46B2" Offset="0.35"/>
                 </LinearGradientBrush>
             </DockPanel.Background>
-            <ListBox x:Name="list" ItemContainerStyle="{DynamicResource _ListBoxItemStyle}" Width="800" MouseDoubleClick="List_MouseDoubleClick" FontFamily="Arial" FontWeight="Bold" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" Drop="list_Drop" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseEnter="all_MouseEnter" MouseLeave="all_MouseLeave"/>
+            <TabControl ItemContainerStyle="{DynamicResource TabControlStyle}" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Century" FontSize="14">
+                <TabItem Header="Playlist" BorderBrush="{x:Null}">
+                    <ListBox x:Name="list" Height="auto" ItemContainerStyle="{DynamicResource ListBoxItemStyle}" Width="auto" MouseDoubleClick="List_MouseDoubleClick" AllowDrop="True" FontFamily="Arial" FontWeight="Bold" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" Drop="list_Drop" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseEnter="all_MouseEnter" MouseLeave="all_MouseLeave"/>
+                </TabItem>
+                <TabItem Header="Details" >
+                    <ListBox x:Name="infoBox" Height="auto" Width="auto" IsHitTestVisible="False" HorizontalAlignment="Left" FontFamily="Arial" FontWeight="Bold" Foreground="White" FontSize="16" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
+                </TabItem>
+                <TabItem Header="Settings" />
+            </TabControl>
         </DockPanel>
     </DockPanel>
 </Window>

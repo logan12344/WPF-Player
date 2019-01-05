@@ -21,12 +21,11 @@ namespace MusicPlayer
         private List<String> audioList = new List<String>();
         private List<String> pathList = new List<String>();
         private MediaPlayer player = new MediaPlayer();
-        private int i = 0, p = 0, randomNumb, randlistIndex;
-        private double volume = 0, locX, locY;
+        private int i = 0, randomNumb, randlistIndex;
+        private double volume = 0;
         private string[] files;
-        private string str, sql;
+        private string sql;
         private bool count = false, backGround = false;
-        Info aboutSong = new Info();
         SQLiteConnection dbConnection;
         SQLiteCommand command;
         SQLiteDataAdapter insert;
@@ -63,7 +62,6 @@ namespace MusicPlayer
 
         private void Window_Activated(object sender, EventArgs e)
         {
-            locationWindows();
             player.MediaOpened += new EventHandler(MusicOpen);
             player.MediaEnded += new EventHandler(MusicEnd);
         }
@@ -81,41 +79,19 @@ namespace MusicPlayer
         private void btClose_Click(object sender, RoutedEventArgs e)
         {
             SystemCommands.CloseWindow(this);
-            aboutSong.Close();
         }
 
         private void btMin_Click(object sender, RoutedEventArgs e)
         {
             SystemCommands.MinimizeWindow(this);
-            aboutSong.Visibility = Visibility.Hidden;
         }
 
         private void TitleBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && aboutSong.Visibility == Visibility.Visible)
-            {
-                aboutSong.Visibility = Visibility.Hidden;
+            if (e.LeftButton == MouseButtonState.Pressed)
                 DragMove();
-                locationWindows();
-                aboutSongLocation();
-                aboutSong.Visibility = Visibility.Visible;
-            }
             else
-            {
                 DragMove();
-                locationWindows();
-            }
-        }
-
-        private void info_Click(object sender, RoutedEventArgs e)
-        {
-            if (aboutSong.Visibility == Visibility.Hidden)
-            {
-                aboutSongLocation();
-                aboutSong.Visibility = Visibility.Visible;
-            }
-            else
-                aboutSong.Visibility = Visibility.Hidden;
         }
 
         private void BtSettings_Click(object sender, RoutedEventArgs e)
@@ -134,12 +110,11 @@ namespace MusicPlayer
 
         private void defaulBackGround()
         {
-            mainFormDefaultBackGround();
+            DefaultBackGround();
             defaulTitleBoxGradient();
-            infoDefaultBackGround();
         }
 
-        private void mainFormDefaultBackGround()
+        private void DefaultBackGround()
         {
             var bc = new BrushConverter();
             dockFirst.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
@@ -156,20 +131,7 @@ namespace MusicPlayer
             label.Foreground = Brushes.White;
             Pesnya.Foreground = Brushes.White;
             list.Foreground = Brushes.White;
-        }
-
-        private void infoDefaultBackGround()
-        {
-            var bc = new BrushConverter();
-            aboutSong.infoPanel.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
-            aboutSong.infoBox.Foreground = Brushes.White;
-            aboutSong.infoText.Foreground = Brushes.White;
-            LinearGradientBrush gradient = new LinearGradientBrush();
-            gradient.StartPoint = new Point(0.5, 0);
-            gradient.EndPoint = new Point(0.5, 1);
-            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF2E46B2"), 1));
-            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 0.35));
-            aboutSong.TitleBox.Background = gradient;
+            infoBox.Foreground = Brushes.White;
         }
 
         private void defaulTitleBoxGradient()
@@ -185,12 +147,11 @@ namespace MusicPlayer
 
         private void customMainBackGround()
         {
-            customMainTitleBoxGradient();
-            mainFormBackGround();
-            infoCustomBackGround();
+            customTitleBoxGradient();
+            customBackGround();
         }
 
-        private void mainFormBackGround()
+        private void customBackGround()
         {
             dockFirst.Background = Brushes.LightPink;
             dockSecond.Background = Brushes.LightPink;
@@ -206,22 +167,10 @@ namespace MusicPlayer
             label.Foreground = Brushes.Black;
             Pesnya.Foreground = Brushes.Black;
             list.Foreground = Brushes.Black;
+            infoBox.Foreground = Brushes.Black;
         }
 
-        private void infoCustomBackGround()
-        {
-            LinearGradientBrush gradient = new LinearGradientBrush();
-            gradient.StartPoint = new Point(0.5, 0);
-            gradient.EndPoint = new Point(0.5, 1);
-            gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 1));
-            gradient.GradientStops.Add(new GradientStop(Colors.Aqua, 0.35));
-            aboutSong.TitleBox.Background = gradient;
-            aboutSong.infoBox.Foreground = Brushes.Black;
-            aboutSong.infoPanel.Background = Brushes.LightPink;
-            aboutSong.infoText.Foreground = Brushes.Black;
-        }
-
-        private void customMainTitleBoxGradient()
+        private void customTitleBoxGradient()
         {
             LinearGradientBrush gradient = new LinearGradientBrush();
             gradient.StartPoint = new Point(0.5, 0);
@@ -249,6 +198,7 @@ namespace MusicPlayer
         {
             audioList.Clear();
             list.Items.Clear();
+            infoBoxClear();
             command = new SQLiteCommand("SELECT * FROM PlayList", dbConnection);
             rdr = command.ExecuteReader();
             while (rdr.Read())
@@ -261,19 +211,13 @@ namespace MusicPlayer
 
         private void btReload_Click(object sender, RoutedEventArgs e)
         {
+            infoBoxClear();
             image();
             Pesnya.Text = "";
             audioList.Clear();
             i = 0;
             list.Items.Clear();
-            clear();
             player.Stop();
-        }
-
-        private void clear()
-        {
-            aboutSong.infoBox.Items.Clear();
-            aboutSong.infoText.Text = "";
         }
 
         private void image()
@@ -387,7 +331,7 @@ namespace MusicPlayer
 
         private void btbefore_Click(object sender, RoutedEventArgs e)
         {
-            clear();
+            infoBoxClear();
             player.Close();
             Peremotka.Value = 0;
             volumeChange();
@@ -413,7 +357,7 @@ namespace MusicPlayer
         {
             if (String.IsNullOrEmpty((string)Pesnya.Text))
             {
-                clear();
+                infoBoxClear();
                 player.Close();
                 volumeChange();
                 player.Open(new Uri(audioList[list.SelectedIndex]));
@@ -431,7 +375,7 @@ namespace MusicPlayer
         {
             try
             {
-                clear();
+                infoBoxClear();
                 player.Close();
                 Peremotka.Value = 0;
                 volumeChange();
@@ -457,7 +401,7 @@ namespace MusicPlayer
 
         private void btNext_Click(object sender, RoutedEventArgs e)
         {
-            clear();
+            infoBoxClear();
             player.Close();
             Peremotka.Value = 0;
             volumeChange();
@@ -521,10 +465,6 @@ namespace MusicPlayer
         private void content()
         {
             Pesnya.Text = list.SelectedItem.ToString();
-            if (list.SelectedItem != null)
-            {
-                aboutSong.infoText.Text = list.SelectedItem.ToString();
-            }
         }
 
         private void pathImage(int p)
@@ -532,10 +472,10 @@ namespace MusicPlayer
             try
             {
                 TagLib.File file = TagLib.File.Create(audioList[p]);
-                aboutSong.infoBox.Items.Add("Title: " + file.Tag.Title);
-                aboutSong.infoBox.Items.Add("Performer: " + file.Tag.FirstPerformer);
-                aboutSong.infoBox.Items.Add("Album: " + file.Tag.Album);
-                aboutSong.infoBox.Items.Add("Year: " + Convert.ToString(file.Tag.Year));
+                infoBox.Items.Add("Title: " + file.Tag.Title);
+                infoBox.Items.Add("Performer: " + file.Tag.FirstPerformer);
+                infoBox.Items.Add("Album: " + file.Tag.Album);
+                infoBox.Items.Add("Year: " + Convert.ToString(file.Tag.Year));
                 TagLib.IPicture pic = file.Tag.Pictures[0];
                 MemoryStream stream = new MemoryStream(pic.Data.Data);
                 Image im = new Image();
@@ -624,21 +564,14 @@ namespace MusicPlayer
             Cursor = Cursors.Arrow;
         }
 
-        private void aboutSongLocation()
-        {
-            aboutSong.Top = locX;
-            aboutSong.Left = locY - 284;
-        }
-
-        private void locationWindows()
-        {
-            locX = this.Top;
-            locY = this.Left;
-        }
-
         private void Instagram_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://www.instagram.com/logan.pasha/");
+        }
+
+        private void infoBoxClear()
+        {
+            infoBox.Items.Clear();
         }
     }
 }

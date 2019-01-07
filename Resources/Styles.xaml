@@ -145,9 +145,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Border Name="_Border"
-                                Padding="2"
-                                SnapsToDevicePixels="true">
+                    <Border Name="_Border" Padding="2" SnapsToDevicePixels="true">
                         <ContentPresenter />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -161,19 +159,29 @@
         </Setter>
     </Style>
 
-    <Style x:Key="TabControlStyle" TargetType="TabItem">
+    <Style TargetType="{x:Type TabControl}">
+        <Setter Property="TabStripPlacement" Value="Top" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <Style TargetType="TabItem">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="BorderThickness" Value="10"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="TabItem">
-                    <Border Name="Border" BorderThickness="1,1,1,0" BorderBrush="Gainsboro" CornerRadius="8,8,0,0" Margin="2,0">
-                        <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="10,2"/>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderThickness="1,1,1,0" BorderBrush="Black" CornerRadius="2,2,0,0" Padding="50,0,50,0">
+                        <ContentPresenter ContentSource="Header" Margin="2" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Border" Property="Background" Value="LightSkyBlue" />
+                            <Setter Property="Background" Value="#FFFFFFFF"/>
+                            <Setter Property="Foreground" Value="#FF000000"/>
                         </Trigger>
-                        <Trigger Property="IsSelected" Value="False">
-                            <Setter TargetName="Border" Property="Background" Value="GhostWhite" />
+                        <Trigger Property="IsSelected" Value="false">
+                            <Setter Property="Background" Value="#FF000000"/>
+                            <Setter Property="Foreground" Value="#FFFFFFFF"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

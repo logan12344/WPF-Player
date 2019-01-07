@@ -21,11 +21,11 @@ namespace MusicPlayer
         private List<String> audioList = new List<String>();
         private List<String> pathList = new List<String>();
         private MediaPlayer player = new MediaPlayer();
-        private int i = 0, randomNumb, randlistIndex;
+        private int i = 0, randomNumb, randlistIndex, check;
         private double volume = 0;
         private string[] files;
         private string sql;
-        private bool count = false, backGround = false;
+        private bool count = false;
         SQLiteConnection dbConnection;
         SQLiteCommand command;
         SQLiteDataAdapter insert;
@@ -34,28 +34,31 @@ namespace MusicPlayer
         public PlayerWPF()
         {
             InitializeComponent();
-            dbConnectAsync();
         }
 
-        private async void dbConnectAsync()
+        private void Window_Initialized(object sender, EventArgs e)
         {
-            await Task.Run(() => dbConnect());
+            DbConnect();
+            ThemeLoader();
         }
 
-        private void dbConnect()
+        private void DbConnect()
         {
-            if (!File.Exists("PlayList.sqlite"))
+            if (!File.Exists("Player.sqlite"))
             {
-                SQLiteConnection.CreateFile("PlayList.sqlite");
-                dbConnection = new SQLiteConnection("Data Source=PlayList.sqlite;Version=3;");
+                SQLiteConnection.CreateFile("Player.sqlite");
+                dbConnection = new SQLiteConnection("Data Source=Player.sqlite;Version=3;");
                 dbConnection.Open();
                 sql = "Create Table PlayList (playList varchar(255))";
+                command = new SQLiteCommand(sql, dbConnection);
+                command.ExecuteNonQuery();
+                sql = "Create Table Theme (theme int)";
                 command = new SQLiteCommand(sql, dbConnection);
                 command.ExecuteNonQuery();
             }
             else
             {
-                dbConnection = new SQLiteConnection("Data Source=PlayList.sqlite;Version=3;");
+                dbConnection = new SQLiteConnection("Data Source=Player.sqlite;Version=3;");
                 dbConnection.Open();
             }
         }
@@ -94,91 +97,13 @@ namespace MusicPlayer
                 DragMove();
         }
 
-        private void BtSettings_Click(object sender, RoutedEventArgs e)
+        private void ThemeLoader()
         {
-            if (!backGround)
-            {
-                backGround = true;
-                customMainBackGround();
-            }
-            else
-            {
-                backGround = false;
-                defaulBackGround();
-            }
-        }
-
-        private void defaulBackGround()
-        {
-            DefaultBackGround();
-            defaulTitleBoxGradient();
-        }
-
-        private void DefaultBackGround()
-        {
-            var bc = new BrushConverter();
-            dockFirst.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
-            dockSecond.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
-            dockThird.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
-
-            LinearGradientBrush gradient = new LinearGradientBrush();
-            gradient.StartPoint = new Point(0.5, 0);
-            gradient.EndPoint = new Point(0.5, 1);
-            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF2E46B2"), 0.35));
-            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 1));
-            dockFourth.Background = gradient;
-
-            label.Foreground = Brushes.White;
-            Pesnya.Foreground = Brushes.White;
-            list.Foreground = Brushes.White;
-            infoBox.Foreground = Brushes.White;
-        }
-
-        private void defaulTitleBoxGradient()
-        {
-            LinearGradientBrush gradient = new LinearGradientBrush();
-            gradient.StartPoint = new Point(0.5, 0);
-            gradient.EndPoint = new Point(0.5, 1);
-            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF2E46B2"), 1));
-            gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 0.35));
-            TitleBox.Background = gradient;
-            Caption.Foreground = Brushes.White;
-        }
-
-        private void customMainBackGround()
-        {
-            customTitleBoxGradient();
-            customBackGround();
-        }
-
-        private void customBackGround()
-        {
-            dockFirst.Background = Brushes.LightPink;
-            dockSecond.Background = Brushes.LightPink;
-            dockThird.Background = Brushes.LightPink;
-
-            LinearGradientBrush gradient = new LinearGradientBrush();
-            gradient.StartPoint = new Point(0.5, 0);
-            gradient.EndPoint = new Point(0.5, 1);
-            gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 0.35));
-            gradient.GradientStops.Add(new GradientStop(Colors.Aqua, 1));
-            dockFourth.Background = gradient;
-            
-            label.Foreground = Brushes.Black;
-            Pesnya.Foreground = Brushes.Black;
-            list.Foreground = Brushes.Black;
-            infoBox.Foreground = Brushes.Black;
-        }
-
-        private void customTitleBoxGradient()
-        {
-            LinearGradientBrush gradient = new LinearGradientBrush();
-            gradient.StartPoint = new Point(0.5, 0);
-            gradient.EndPoint = new Point(0.5, 1);
-            gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 1));
-            gradient.GradientStops.Add(new GradientStop(Colors.Aqua, 0.35));
-            TitleBox.Background = gradient;
-            Caption.Foreground = Brushes.Black;
+            command = new SQLiteCommand("SELECT * FROM Theme", dbConnection);
+            rdr = command.ExecuteReader();
+            while (rdr.Read())
+                check = Convert.ToInt32(rdr["theme"]);
+            BackGround(check);
         }
 
         private void PlayListSaver_Click(object sender, RoutedEventArgs e)
@@ -213,7 +138,7 @@ namespace MusicPlayer
         {
             infoBoxClear();
             image();
-            Pesnya.Text = "";
+            TrackName.Text = "";
             audioList.Clear();
             i = 0;
             list.Items.Clear();
@@ -248,6 +173,7 @@ namespace MusicPlayer
                 TagLib.File file = TagLib.File.Create(audioList[i]);
                 list.Items.Add(i + 1 + ". " + file.Tag.FirstPerformer + " - " + file.Tag.Title);
             }
+            catch(ArgumentOutOfRangeException e) { }
             catch
             {
                 var textInfo = new CultureInfo("ru-RU").TextInfo;
@@ -283,26 +209,26 @@ namespace MusicPlayer
             mute();
             if (volume != 0)
             {
-                slider.Value = volume;
+                volSlider.Value = volume;
             }
             else
             {
-                slider.Value = 50;
+                volSlider.Value = 50;
             }
         }
 
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if(slider!= null)
+            if(volSlider != null)
             {
                 volumeChange();
             }
-            if (slider.Value != 0 && SoundOff != null)
+            if (volSlider.Value != 0 && SoundOff != null)
             {
                 mute();
             }
 
-            if (slider.Value == 0)
+            if (volSlider.Value == 0)
             {
                 mute1();
             }
@@ -310,9 +236,9 @@ namespace MusicPlayer
 
         private void SoundOn_Click(object sender, RoutedEventArgs e)
         {
-            volume = slider.Value;
+            volume = volSlider.Value;
             mute1();
-            slider.Value = 0;
+            volSlider.Value = 0;
         }
 
         private void mute1()
@@ -343,7 +269,7 @@ namespace MusicPlayer
                 informationStatus();
             }
             else if (count)
-                scatter();
+                random();
             else
                 lastClick();
         }
@@ -355,20 +281,24 @@ namespace MusicPlayer
 
         private void btPlay_Click(object sender, RoutedEventArgs e)
         {
-            if (String.IsNullOrEmpty((string)Pesnya.Text))
+            try
             {
-                infoBoxClear();
-                player.Close();
-                volumeChange();
-                player.Open(new Uri(audioList[list.SelectedIndex]));
-                pathImage(list.SelectedIndex);
-                timer();
-                informationStatus();
+                if (String.IsNullOrEmpty((string)TrackName.Text))
+                {
+                    infoBoxClear();
+                    player.Close();
+                    volumeChange();
+                    player.Open(new Uri(audioList[list.SelectedIndex]));
+                    pathImage(list.SelectedIndex);
+                    timer();
+                    informationStatus();
+                }
+                else
+                {
+                    player.Play();
+                }
             }
-            else
-            {
-                player.Play();
-            }
+            catch { }
         }
 
         private void List_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -413,7 +343,7 @@ namespace MusicPlayer
                 informationStatus();
             }
             else if (count)
-                scatter();
+                random();
             else
                 lastClick();
         }
@@ -438,7 +368,7 @@ namespace MusicPlayer
 
         private void volumeChange()
         {
-            player.Volume = Convert.ToDouble(slider.Value) / 170;
+            player.Volume = Convert.ToDouble(volSlider.Value) / 170;
         }
 
         private void Peremotka_LostMouseCapture(object sender, MouseEventArgs e)
@@ -459,12 +389,12 @@ namespace MusicPlayer
 
         private void labelTick()
         {
-            label.Content = TimeSpan.FromSeconds(Math.Round(Peremotka.Value)) + "/" + TimeSpan.FromSeconds(Peremotka.Maximum);
+            timerLabel.Content = TimeSpan.FromSeconds(Math.Round(Peremotka.Value)) + "/" + TimeSpan.FromSeconds(Peremotka.Maximum);
         }
 
         private void content()
         {
-            Pesnya.Text = list.SelectedItem.ToString();
+            TrackName.Text = list.SelectedItem.ToString();
         }
 
         private void pathImage(int p)
@@ -510,7 +440,7 @@ namespace MusicPlayer
             }
         }
 
-        private void scatter()
+        private void random()
         {
             randlistIndex = randomSound();
             player.Open(new Uri(audioList[randlistIndex]));
@@ -536,7 +466,7 @@ namespace MusicPlayer
         {
             Image myImg = (Image)sender;
             DropShadowEffect myEffect = new DropShadowEffect();
-            if (!backGround)
+            if (check == 0)
                 myEffect.Color = Colors.White;
             else
                 myEffect.Color = Colors.Black;
@@ -572,6 +502,84 @@ namespace MusicPlayer
         private void infoBoxClear()
         {
             infoBox.Items.Clear();
+        }
+
+        private void BrightTheme_Click(object sender, RoutedEventArgs e)
+        {
+            check = 1;
+            BackGround(check);
+        }
+
+        private void DefaultTheme_Click(object sender, RoutedEventArgs e)
+        {
+            check = 0;
+            BackGround(check);
+        }
+
+        private void BackGround(int check)
+        {
+            LinearGradientBrush gradient = new LinearGradientBrush();
+            LinearGradientBrush gradientTitle = new LinearGradientBrush();
+            if (check == 1)
+            {
+                dockFirst.Background = Brushes.LightPink;
+                dockSecond.Background = Brushes.LightPink;
+                dockThird.Background = Brushes.LightPink;
+
+                gradient.StartPoint = new Point(0.5, 0);
+                gradient.EndPoint = new Point(0.5, 1);
+                gradient.GradientStops.Add(new GradientStop(Colors.LightPink, 0.35));
+                gradient.GradientStops.Add(new GradientStop(Colors.Aqua, 1));
+                dockFourth.Background = gradient;
+
+                timerLabel.Foreground = Brushes.Black;
+                TrackName.Foreground = Brushes.Black;
+                list.Foreground = Brushes.Black;
+                infoBox.Foreground = Brushes.Black;
+
+                gradientTitle.StartPoint = new Point(0.5, 0);
+                gradientTitle.EndPoint = new Point(0.5, 1);
+                gradientTitle.GradientStops.Add(new GradientStop(Colors.LightPink, 1));
+                gradientTitle.GradientStops.Add(new GradientStop(Colors.Aqua, 0.35));
+                TitleBox.Background = gradientTitle;
+                Caption.Foreground = Brushes.Black;
+            }
+            else
+            {
+                var bc = new BrushConverter();
+                dockFirst.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
+                dockSecond.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
+                dockThird.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
+
+                gradient.StartPoint = new Point(0.5, 0);
+                gradient.EndPoint = new Point(0.5, 1);
+                gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF2E46B2"), 0.35));
+                gradient.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 1));
+                dockFourth.Background = gradient;
+
+                timerLabel.Foreground = Brushes.White;
+                TrackName.Foreground = Brushes.White;
+                list.Foreground = Brushes.White;
+                infoBox.Foreground = Brushes.White;
+
+                gradientTitle.StartPoint = new Point(0.5, 0);
+                gradientTitle.EndPoint = new Point(0.5, 1);
+                gradientTitle.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF2E46B2"), 1));
+                gradientTitle.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 0.35));
+                TitleBox.Background = gradientTitle;
+                Caption.Foreground = Brushes.White;
+            }
+            ThemeSaver(check);
+        }
+
+        private void ThemeSaver(int check)
+        {
+            command = new SQLiteCommand(@"DELETE FROM Theme;", dbConnection);
+            command.ExecuteNonQuery();
+            insert = new SQLiteDataAdapter();
+            insert.InsertCommand = new SQLiteCommand("Insert Into Theme Values (@theme)", dbConnection);
+            insert.InsertCommand.Parameters.AddWithValue("@theme", check);
+            insert.InsertCommand.ExecuteNonQuery();
         }
     }
 }

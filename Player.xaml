@@ -27,17 +27,17 @@
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
-                            <Image Height="20" Width="20" Source="Resources\instagram.png" VerticalAlignment="Center" MouseEnter="playImg_MouseEnter" MouseLeave="playImg_MouseLeave"/>
+                            <Image Source="{StaticResource instagram}" MouseEnter="playImg_MouseEnter" MouseLeave="playImg_MouseLeave"/>
                         </Grid>
                     </ControlTemplate>
                 </Button.Template>
             </Button>
             <TextBlock Name="Caption"  HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Gadugi" FontSize="16" Text="Player" Foreground="White" TextDecorations="{x:Null}" Margin="10,0,0,0" FontWeight="Bold"/>
-            <Button Name="btClose" HorizontalAlignment="Right" Width="27" Background="Transparent" BorderThickness="0" DockPanel.Dock="Right" Click="btClose_Click" WindowChrome.IsHitTestVisibleInChrome="True">
-                <Path  Stroke="White" StrokeThickness="1.5" Stretch="None" Data="M0,0 L8,8 M0,8 L8,0" />
+            <Button Name="btClose" HorizontalAlignment="Right" Width="27" Background="Transparent" BorderThickness="0" DockPanel.Dock="Right" Click="btClose_Click">
+                <Path  Stroke="Black" StrokeThickness="2.5" Stretch="None" Data="M0,0 L8,8 M0,8 L8,0" />
             </Button>
-            <Button Name="btMin" HorizontalAlignment="Right" Width="27" Background="Transparent" BorderThickness="0" DockPanel.Dock="Right" Click="btMin_Click" WindowChrome.IsHitTestVisibleInChrome="True" RenderTransformOrigin="0.685,0.556">
-                <Path Stroke="White"  StrokeThickness="1" Stretch="None" RenderOptions.EdgeMode="Aliased" Data="M0,8 H8 M0,7 H8 M0,6 H8" RenderTransformOrigin="-4.312,0.562"/>
+            <Button Name="btMin" HorizontalAlignment="Right" Width="27" Background="Transparent" BorderThickness="0" DockPanel.Dock="Right" Click="btMin_Click">
+                <Path Stroke="Black"  StrokeThickness="1" Stretch="None" RenderOptions.EdgeMode="Aliased" Data="M0,8 H8 M0,7 H8 M0,6 H8" RenderTransformOrigin="-4.312,0.562"/>
             </Button>
         </DockPanel>
         <Grid x:Name="dockFirst" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Background="#FF2E46B2">
@@ -139,11 +139,11 @@
                 </Button.Template>
             </Button>
             <Label x:Name="timerLabel" DockPanel.Dock="Right" Margin="0,0,5,12" Width="143" Height="25" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontFamily="Arial" Content="00:00:00/00:00:00" FontSize="16" Foreground="White" Background="{x:Null}" FontWeight="Bold"/>
-            <Button x:Name="Scatter" Width="37" Height="37" VerticalAlignment="Bottom" Margin="0,0,3,4" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="Scatter_Click" MouseEnter="all_MouseEnter" MouseLeave="all_MouseLeave">
+            <Button x:Name="Random" Width="37" Height="37" VerticalAlignment="Bottom" Margin="0,0,3,4" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="Scatter_Click" MouseEnter="all_MouseEnter" MouseLeave="all_MouseLeave">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
-                            <Image Height="37" Width="37" Source="Resources\intersecting-arrows.png" VerticalAlignment="Center"/>
+                            <Image Source="{StaticResource random}"/>
                         </Grid>
                     </ControlTemplate>
                 </Button.Template>

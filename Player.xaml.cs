@@ -81,6 +81,7 @@ namespace MusicPlayer
 
         private void btClose_Click(object sender, RoutedEventArgs e)
         {
+            ThemeSaver();
             SystemCommands.CloseWindow(this);
         }
 
@@ -569,10 +570,9 @@ namespace MusicPlayer
                 TitleBox.Background = gradientTitle;
                 Caption.Foreground = Brushes.White;
             }
-            ThemeSaver(check);
         }
 
-        private void ThemeSaver(int check)
+        private void ThemeSaver()
         {
             command = new SQLiteCommand(@"DELETE FROM Theme;", dbConnection);
             command.ExecuteNonQuery();

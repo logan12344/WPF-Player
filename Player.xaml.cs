@@ -100,23 +100,27 @@ namespace MusicPlayer
 
         private void ThemeLoader()
         {
-            command = new SQLiteCommand("SELECT * FROM Theme", dbConnection);
-            rdr = command.ExecuteReader();
-            while (rdr.Read())
-                check = Convert.ToInt32(rdr["theme"]);
-            BackGround(check);
+            using (command = new SQLiteCommand("SELECT * FROM Theme", dbConnection))
+            {
+                rdr = command.ExecuteReader();
+                while (rdr.Read())
+                    check = Convert.ToInt32(rdr["theme"]);
+                BackGround(check);
+            }
         }
 
         private void PlayListSaver_Click(object sender, RoutedEventArgs e)
         {
-            command = new SQLiteCommand(@"DELETE FROM PlayList;", dbConnection);
-            command.ExecuteNonQuery();
-            for (int p = 0; p < audioList.Count; p++)
+            using (command = new SQLiteCommand(@"DELETE FROM PlayList;", dbConnection))
             {
-                insert = new SQLiteDataAdapter();
-                insert.InsertCommand = new SQLiteCommand("Insert Into PlayList Values (@playList)", dbConnection);
-                insert.InsertCommand.Parameters.AddWithValue("@playList", audioList[p]);
-                insert.InsertCommand.ExecuteNonQuery();
+                command.ExecuteNonQuery();
+                for (int p = 0; p < audioList.Count; p++)
+                {
+                    insert = new SQLiteDataAdapter();
+                    insert.InsertCommand = new SQLiteCommand("Insert Into PlayList Values (@playList)", dbConnection);
+                    insert.InsertCommand.Parameters.AddWithValue("@playList", audioList[p]);
+                    insert.InsertCommand.ExecuteNonQuery();
+                }
             }
         }
 
@@ -125,14 +129,16 @@ namespace MusicPlayer
             audioList.Clear();
             list.Items.Clear();
             infoBoxClear();
-            command = new SQLiteCommand("SELECT * FROM PlayList", dbConnection);
-            rdr = command.ExecuteReader();
-            while (rdr.Read())
+            using (command = new SQLiteCommand("SELECT * FROM PlayList", dbConnection))
             {
-                audioList.Add(rdr["playList"].ToString());
+                rdr = command.ExecuteReader();
+                while (rdr.Read())
+                {
+                    audioList.Add(rdr["playList"].ToString());
+                }
+                for (int i = 0; i < audioList.Count; i++)
+                    addMusic();
             }
-            for (int i = 0; i < audioList.Count; i++)
-                addMusic();
         }
 
         private void btReload_Click(object sender, RoutedEventArgs e)
@@ -148,7 +154,7 @@ namespace MusicPlayer
 
         private void image()
         {
-            ImageSource imageSource = new BitmapImage(new Uri("/Resources/music-album.png", UriKind.Relative));
+            var imageSource = new BitmapImage(new Uri("/Resources/music-album.png", UriKind.Relative));
             myImage.Source = imageSource;
         }
 
@@ -324,7 +330,7 @@ namespace MusicPlayer
 
         private void timer()
         {
-            DispatcherTimer timer = new DispatcherTimer();
+            var timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 0, 1);
             timer.Tick += new EventHandler(timerTick);
             timer.Start();
@@ -408,9 +414,9 @@ namespace MusicPlayer
                 infoBox.Items.Add("Album: " + file.Tag.Album);
                 infoBox.Items.Add("Year: " + Convert.ToString(file.Tag.Year));
                 TagLib.IPicture pic = file.Tag.Pictures[0];
-                MemoryStream stream = new MemoryStream(pic.Data.Data);
+                var stream = new MemoryStream(pic.Data.Data);
                 Image im = new Image();
-                BitmapFrame bmp = BitmapFrame.Create(stream);
+                var bmp = BitmapFrame.Create(stream);
                 myImage.Source = bmp;
                 file.Save();
             }
@@ -426,7 +432,7 @@ namespace MusicPlayer
             {
                 count = true;
                 Button myImg = (Button)sender;
-                DropShadowEffect myEffect = new DropShadowEffect();
+                var myEffect = new DropShadowEffect();
                 myEffect.Color = Colors.Purple;
                 myEffect.BlurRadius = 10;
                 myEffect.ShadowDepth = 1;
@@ -519,8 +525,8 @@ namespace MusicPlayer
 
         private void BackGround(int check)
         {
-            LinearGradientBrush gradient = new LinearGradientBrush();
-            LinearGradientBrush gradientTitle = new LinearGradientBrush();
+            var gradient = new LinearGradientBrush();
+            var gradientTitle = new LinearGradientBrush();
             if (check == 1)
             {
                 dockFirst.Background = Brushes.LightPink;
@@ -574,12 +580,14 @@ namespace MusicPlayer
 
         private void ThemeSaver()
         {
-            command = new SQLiteCommand(@"DELETE FROM Theme;", dbConnection);
-            command.ExecuteNonQuery();
-            insert = new SQLiteDataAdapter();
-            insert.InsertCommand = new SQLiteCommand("Insert Into Theme Values (@theme)", dbConnection);
-            insert.InsertCommand.Parameters.AddWithValue("@theme", check);
-            insert.InsertCommand.ExecuteNonQuery();
+            using (command = new SQLiteCommand(@"DELETE FROM Theme;", dbConnection))
+            {
+                command.ExecuteNonQuery();
+                insert = new SQLiteDataAdapter();
+                insert.InsertCommand = new SQLiteCommand("Insert Into Theme Values (@theme)", dbConnection);
+                insert.InsertCommand.Parameters.AddWithValue("@theme", check);
+                insert.InsertCommand.ExecuteNonQuery();
+            }
         }
     }
 }

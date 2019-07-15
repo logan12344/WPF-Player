@@ -31,77 +31,67 @@ namespace MusicPlayer
         SQLiteDataAdapter insert;
         SQLiteDataReader rdr;
 
-        public PlayerWPF()
-        {
+        public PlayerWPF(){
             InitializeComponent();
         }
 
-        private void Window_Initialized(object sender, EventArgs e)
-        {
+        private void Window_Initialized(object sender, EventArgs e){
             DbConnect();
             ThemeLoader();
         }
 
-        private void DbConnect()
-        {
-            if (!File.Exists("Player.sqlite"))
-            {
+        private void DbConnect(){
+            if (!File.Exists("Player.sqlite")){
                 SQLiteConnection.CreateFile("Player.sqlite");
                 dbConnection = new SQLiteConnection("Data Source=Player.sqlite;Version=3;");
                 dbConnection.Open();
                 sql = "Create Table PlayList (playList varchar(255))";
-                command = new SQLiteCommand(sql, dbConnection);
-                command.ExecuteNonQuery();
-                sql = "Create Table Theme (theme int)";
-                command = new SQLiteCommand(sql, dbConnection);
-                command.ExecuteNonQuery();
+                using (command = new SQLiteCommand(sql, dbConnection)){
+                    command.ExecuteNonQuery();
+                    sql = "Create Table Theme (theme int)";
+                    using (command = new SQLiteCommand(sql, dbConnection)){
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
-            else
-            {
+            else{
                 dbConnection = new SQLiteConnection("Data Source=Player.sqlite;Version=3;");
                 dbConnection.Open();
             }
         }
 
-        private void Window_Activated(object sender, EventArgs e)
-        {
+        private void Window_Activated(object sender, EventArgs e){
             player.MediaOpened += new EventHandler(MusicOpen);
             player.MediaEnded += new EventHandler(MusicEnd);
         }
 
-        private void MusicOpen(object sender, EventArgs e)
-        {
+        private void MusicOpen(object sender, EventArgs e){
             Peremotka.Maximum = Math.Round(player.NaturalDuration.TimeSpan.TotalSeconds);
         }
 
-        private void MusicEnd(object sender, EventArgs e)
-        {
+        private void MusicEnd(object sender, EventArgs e){
             btNext_Click(sender, null);
         }
 
-        private void btClose_Click(object sender, RoutedEventArgs e)
-        {
+        private void btClose_Click(object sender, RoutedEventArgs e){
             ThemeSaver();
+            dbConnection.Close();
             SystemCommands.CloseWindow(this);
         }
 
-        private void btMin_Click(object sender, RoutedEventArgs e)
-        {
+        private void btMin_Click(object sender, RoutedEventArgs e){
             SystemCommands.MinimizeWindow(this);
         }
 
-        private void TitleBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
+        private void TitleBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e){
             if (e.LeftButton == MouseButtonState.Pressed)
                 DragMove();
             else
                 DragMove();
         }
 
-        private void ThemeLoader()
-        {
-            using (command = new SQLiteCommand("SELECT * FROM Theme", dbConnection))
-            {
+        private void ThemeLoader(){
+            using (command = new SQLiteCommand("SELECT * FROM Theme", dbConnection)){
                 rdr = command.ExecuteReader();
                 while (rdr.Read())
                     check = Convert.ToInt32(rdr["theme"]);
@@ -109,40 +99,47 @@ namespace MusicPlayer
             }
         }
 
-        private void PlayListSaver_Click(object sender, RoutedEventArgs e)
-        {
-            using (command = new SQLiteCommand(@"DELETE FROM PlayList;", dbConnection))
-            {
+        private void PlayListSaver_Click(object sender, RoutedEventArgs e){
+            using (command = new SQLiteCommand(@"DELETE FROM PlayList;", dbConnection)){
                 command.ExecuteNonQuery();
-                for (int p = 0; p < audioList.Count; p++)
-                {
+                for (int p = 0; p < audioList.Count; p++){
                     insert = new SQLiteDataAdapter();
                     insert.InsertCommand = new SQLiteCommand("Insert Into PlayList Values (@playList)", dbConnection);
                     insert.InsertCommand.Parameters.AddWithValue("@playList", audioList[p]);
                     insert.InsertCommand.ExecuteNonQuery();
                 }
             }
+            StatusTracker.Text = "Playlist was saved successfully";
+            statusTimer();
         }
 
-        private void PlayListLoader_Click(object sender, RoutedEventArgs e)
-        {
+        private void statusTimer(){
+            var timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 3);
+            timer.Tick += new EventHandler(timerTickStatus);
+            timer.Start();
+        }
+
+        private void timerTickStatus(object sender, EventArgs e){
+            StatusTracker.Text = "";
+        }
+
+        private void PlayListLoader_Click(object sender, RoutedEventArgs e){
             audioList.Clear();
             list.Items.Clear();
             infoBoxClear();
-            using (command = new SQLiteCommand("SELECT * FROM PlayList", dbConnection))
-            {
+            using (command = new SQLiteCommand("SELECT * FROM PlayList", dbConnection)){
                 rdr = command.ExecuteReader();
                 while (rdr.Read())
-                {
                     audioList.Add(rdr["playList"].ToString());
-                }
                 for (int i = 0; i < audioList.Count; i++)
                     addMusic();
             }
+            StatusTracker.Text = "Playlist was uploaded successfully";
+            statusTimer();
         }
 
-        private void btReload_Click(object sender, RoutedEventArgs e)
-        {
+        private void btReload_Click(object sender, RoutedEventArgs e){
             infoBoxClear();
             image();
             TrackName.Text = "";
@@ -152,20 +149,16 @@ namespace MusicPlayer
             player.Stop();
         }
 
-        private void image()
-        {
+        private void image(){
             var imageSource = new BitmapImage(new Uri("/Resources/music-album.png", UriKind.Relative));
             myImage.Source = imageSource;
         }
 
-        private void btLoad_Click(object sender, RoutedEventArgs e)
-        {
+        private void btLoad_Click(object sender, RoutedEventArgs e){
             System.Windows.Forms.OpenFileDialog open = new System.Windows.Forms.OpenFileDialog();
             open.Multiselect = true;
-            if (open.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                foreach (String file in open.FileNames)
-                {
+            if (open.ShowDialog() == System.Windows.Forms.DialogResult.OK){
+                foreach (String file in open.FileNames){
                     audioList.Add(file);
                     pathList.Add(file);
                     addMusic();
@@ -173,103 +166,77 @@ namespace MusicPlayer
             }
         }
 
-        private void addMusic()
-        {
-            try
-            {
+        private void addMusic(){
+            try{
                 TagLib.File file = TagLib.File.Create(audioList[i]);
                 list.Items.Add(i + 1 + ". " + file.Tag.FirstPerformer + " - " + file.Tag.Title);
             }
-            catch(ArgumentOutOfRangeException e) { }
-            catch
-            {
+            catch (ArgumentOutOfRangeException e) { }
+            catch{
                 var textInfo = new CultureInfo("ru-RU").TextInfo;
                 CustomMessageBox.Show("Track not found: ", Path.GetFileNameWithoutExtension(textInfo.ToTitleCase(textInfo.ToLower(audioList[i]))));
             }
-            finally
-            {
+            finally{
                 i++;
             }
         }
 
-        private void list_Drop(object sender, DragEventArgs e)
-        {
+        private void list_Drop(object sender, DragEventArgs e){
             files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            foreach (string file1 in files)
-            {
+            foreach (string file1 in files){
                 audioList.Add(file1);
                 pathList.Add(Path.GetFullPath(file1));
                 addMusic();
             }
         }
 
-        private void list_DragEnter(object sender, DragEventArgs e)
-        {
+        private void list_DragEnter(object sender, DragEventArgs e){
             if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
-            {
                 e.Effects = DragDropEffects.Copy;
-            }
         }
 
-        private void SoundOff_Click(object sender, RoutedEventArgs e)
-        {
+        private void SoundOff_Click(object sender, RoutedEventArgs e){
             mute();
             if (volume != 0)
-            {
                 volSlider.Value = volume;
-            }
             else
-            {
                 volSlider.Value = 50;
-            }
         }
 
-        private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
+        private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e){
             if(volSlider != null)
-            {
                 volumeChange();
-            }
             if (volSlider.Value != 0 && SoundOff != null)
-            {
                 mute();
-            }
-
             if (volSlider.Value == 0)
-            {
                 mute1();
-            }
+
         }
 
-        private void SoundOn_Click(object sender, RoutedEventArgs e)
-        {
+        private void SoundOn_Click(object sender, RoutedEventArgs e){
             volume = volSlider.Value;
             mute1();
             volSlider.Value = 0;
         }
 
-        private void mute1()
-        {
+        private void mute1(){
             player.IsMuted = true;
             SoundOn.Visibility = Visibility.Hidden;
             SoundOff.Visibility = Visibility.Visible;
         }
 
-        private void mute()
-        {
+        private void mute(){
             player.IsMuted = false;
             SoundOff.Visibility = Visibility.Hidden;
             SoundOn.Visibility = Visibility.Visible;
         }
 
-        private void btbefore_Click(object sender, RoutedEventArgs e)
-        {
+        private void btbefore_Click(object sender, RoutedEventArgs e){
             infoBoxClear();
             player.Close();
             Peremotka.Value = 0;
             volumeChange();
-            if (list.SelectedIndex > 0 && !count)
-            {
+            if (list.SelectedIndex > 0 && !count){
                 player.Open(new Uri(audioList[list.SelectedIndex - 1]));
                 pathImage(list.SelectedIndex - 1);
                 list.SelectedIndex = list.SelectedIndex - 1;
@@ -281,17 +248,13 @@ namespace MusicPlayer
                 lastClick();
         }
 
-        private void btPause_Click(object sender, RoutedEventArgs e)
-        {
+        private void btPause_Click(object sender, RoutedEventArgs e){
             player.Pause();
         }
 
-        private void btPlay_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (String.IsNullOrEmpty((string)TrackName.Text))
-                {
+        private void btPlay_Click(object sender, RoutedEventArgs e){
+            try{
+                if (String.IsNullOrEmpty((string)TrackName.Text)){
                     infoBoxClear();
                     player.Close();
                     volumeChange();
@@ -300,18 +263,15 @@ namespace MusicPlayer
                     timer();
                     informationStatus();
                 }
-                else
-                {
+                else{
                     player.Play();
                 }
             }
             catch { }
         }
 
-        private void List_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
+        private void List_MouseDoubleClick(object sender, MouseButtonEventArgs e){
+            try{
                 infoBoxClear();
                 player.Close();
                 Peremotka.Value = 0;
@@ -321,29 +281,25 @@ namespace MusicPlayer
                 timer();
                 informationStatus();
             }
-            catch
-            {
+            catch{
                 player.Play();
             }
             
         }
 
-        private void timer()
-        {
+        private void timer(){
             var timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 0, 1);
             timer.Tick += new EventHandler(timerTick);
             timer.Start();
         }
 
-        private void btNext_Click(object sender, RoutedEventArgs e)
-        {
+        private void btNext_Click(object sender, RoutedEventArgs e){
             infoBoxClear();
             player.Close();
             Peremotka.Value = 0;
             volumeChange();
-            if (list.SelectedIndex < list.Items.Count - 1 && !count)
-            {
+            if (list.SelectedIndex < list.Items.Count - 1 && !count){
                 player.Open(new Uri(audioList[list.SelectedIndex + 1]));
                 pathImage(list.SelectedIndex + 1);
                 list.SelectedIndex = list.SelectedIndex + 1;
@@ -355,8 +311,7 @@ namespace MusicPlayer
                 lastClick();
         }
 
-        private void lastClick()
-        {
+        private void lastClick(){
             list.SelectedIndex = list.SelectedIndex;
             player.Open(new Uri(audioList[list.SelectedIndex]));
             pathImage(list.SelectedIndex);
@@ -365,49 +320,40 @@ namespace MusicPlayer
             player.Play();
         }
 
-        private void informationStatus()
-        {
+        private void informationStatus(){
             labelTick();
             player.Play();
             list.Focus();
             content();
         }
 
-        private void volumeChange()
-        {
+        private void volumeChange(){
             player.Volume = Convert.ToDouble(volSlider.Value) / 170;
         }
 
-        private void Peremotka_LostMouseCapture(object sender, MouseEventArgs e)
-        {
+        private void Peremotka_LostMouseCapture(object sender, MouseEventArgs e){
             player.Pause();
             player.Position = TimeSpan.FromSeconds(Peremotka.Value);
             player.Play();
         }
 
-        private void timerTick(object sender, EventArgs e)
-        {
-            if (player.NaturalDuration.HasTimeSpan)
-            {
+        private void timerTick(object sender, EventArgs e){
+            if (player.NaturalDuration.HasTimeSpan){
                 Peremotka.Value = Math.Round(player.Position.TotalSeconds);
                 labelTick();
             }
         }
 
-        private void labelTick()
-        {
+        private void labelTick(){
             timerLabel.Content = TimeSpan.FromSeconds(Math.Round(Peremotka.Value)) + "/" + TimeSpan.FromSeconds(Peremotka.Maximum);
         }
 
-        private void content()
-        {
+        private void content(){
             TrackName.Text = list.SelectedItem.ToString();
         }
 
-        private void pathImage(int p)
-        {
-            try
-            {
+        private void pathImage(int p){
+            try{
                 TagLib.File file = TagLib.File.Create(audioList[p]);
                 infoBox.Items.Add("Title: " + file.Tag.Title);
                 infoBox.Items.Add("Performer: " + file.Tag.FirstPerformer);
@@ -420,16 +366,13 @@ namespace MusicPlayer
                 myImage.Source = bmp;
                 file.Save();
             }
-            catch
-            {
+            catch{
                 image();
             }
         }
 
-        private void Scatter_Click(object sender, RoutedEventArgs e)
-        {
-            if (!count)
-            {
+        private void Scatter_Click(object sender, RoutedEventArgs e){
+            if (!count){
                 count = true;
                 Button myImg = (Button)sender;
                 var myEffect = new DropShadowEffect();
@@ -439,16 +382,14 @@ namespace MusicPlayer
                 myEffect.Opacity = 1;
                 myImg.Effect = myEffect;
             }
-            else
-            {
+            else{
                 count = false;
                 Button myImg = (Button)sender;
                 myImg.ClearValue(EffectProperty);
             }
         }
 
-        private void random()
-        {
+        private void random(){
             randlistIndex = randomSound();
             player.Open(new Uri(audioList[randlistIndex]));
             pathImage(randlistIndex);
@@ -456,21 +397,17 @@ namespace MusicPlayer
             informationStatus();
         }
 
-        private int randomSound()
-        {
-            try
-            {
+        private int randomSound(){
+            try{
                 Random rnd = new Random();
                 return randomNumb = rnd.Next(list.Items.Count);
             }
-            catch
-            {
+            catch{
                 return randomSound();
             }
         }
 
-        private void playImg_MouseEnter(object sender, MouseEventArgs e)
-        {
+        private void playImg_MouseEnter(object sender, MouseEventArgs e){
             Image myImg = (Image)sender;
             DropShadowEffect myEffect = new DropShadowEffect();
             if (check == 0)
@@ -484,51 +421,42 @@ namespace MusicPlayer
             Cursor = Cursors.Hand;
         }
 
-        private void playImg_MouseLeave(object sender, MouseEventArgs e)
-        {
+        private void playImg_MouseLeave(object sender, MouseEventArgs e){
             Image myImg = (Image)sender;
             myImg.ClearValue(EffectProperty);
             Cursor = Cursors.Arrow;
         }
 
-        private void all_MouseEnter(object sender, MouseEventArgs e)
-        {
+        private void all_MouseEnter(object sender, MouseEventArgs e){
             Cursor = Cursors.Hand;
         }
 
-        private void all_MouseLeave(object sender, MouseEventArgs e)
-        {
+        private void all_MouseLeave(object sender, MouseEventArgs e){
             Cursor = Cursors.Arrow;
         }
 
-        private void Instagram_Click(object sender, RoutedEventArgs e)
-        {
+        private void Instagram_Click(object sender, RoutedEventArgs e){
             System.Diagnostics.Process.Start("https://www.instagram.com/logan.pasha/");
         }
 
-        private void infoBoxClear()
-        {
+        private void infoBoxClear(){
             infoBox.Items.Clear();
         }
 
-        private void BrightTheme_Click(object sender, RoutedEventArgs e)
-        {
+        private void BrightTheme_Click(object sender, RoutedEventArgs e){
             check = 1;
             BackGround(check);
         }
 
-        private void DefaultTheme_Click(object sender, RoutedEventArgs e)
-        {
+        private void DefaultTheme_Click(object sender, RoutedEventArgs e){
             check = 0;
             BackGround(check);
         }
 
-        private void BackGround(int check)
-        {
+        private void BackGround(int check){
             var gradient = new LinearGradientBrush();
             var gradientTitle = new LinearGradientBrush();
-            if (check == 1)
-            {
+            if (check == 1){
                 dockFirst.Background = Brushes.LightPink;
                 dockSecond.Background = Brushes.LightPink;
                 dockThird.Background = Brushes.LightPink;
@@ -550,9 +478,9 @@ namespace MusicPlayer
                 gradientTitle.GradientStops.Add(new GradientStop(Colors.Aqua, 0.35));
                 TitleBox.Background = gradientTitle;
                 Caption.Foreground = Brushes.Black;
+                StatusTracker.Foreground = Brushes.Black;
             }
-            else
-            {
+            else{
                 var bc = new BrushConverter();
                 dockFirst.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
                 dockSecond.Background = (Brush)bc.ConvertFrom("#FF2E46B2");
@@ -575,13 +503,12 @@ namespace MusicPlayer
                 gradientTitle.GradientStops.Add(new GradientStop((Color)ColorConverter.ConvertFromString("#FF632470"), 0.35));
                 TitleBox.Background = gradientTitle;
                 Caption.Foreground = Brushes.White;
+                StatusTracker.Foreground = Brushes.White;
             }
         }
 
-        private void ThemeSaver()
-        {
-            using (command = new SQLiteCommand(@"DELETE FROM Theme;", dbConnection))
-            {
+        private void ThemeSaver(){
+            using (command = new SQLiteCommand(@"DELETE FROM Theme;", dbConnection)){
                 command.ExecuteNonQuery();
                 insert = new SQLiteDataAdapter();
                 insert.InsertCommand = new SQLiteCommand("Insert Into Theme Values (@theme)", dbConnection);

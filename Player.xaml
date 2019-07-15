@@ -100,6 +100,7 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
+            <TextBlock Name="StatusTracker" Height="35" Width="350" TextAlignment="Center" Foreground="White" HorizontalAlignment="Right" Margin="0,0,10,0" Background="{x:Null}" FontSize="18" FontFamily="Arial" IsHitTestVisible="True"  FontWeight="Bold"/>
         </DockPanel>
         <DockPanel x:Name="dockThird" VerticalAlignment="Top" Height="50" DockPanel.Dock="Top" Background="#FF2E46B2">
             <Button x:Name="btBefore" Content="Before" Height="40" VerticalAlignment="Center" Width="40" Click="btbefore_Click" Margin="5,0,0,2">
